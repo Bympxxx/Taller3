@@ -1,0 +1,70 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-900/40 via-gray-950 to-blue-900/40 py-24">
+
+  <!-- Hero -->
+  <section class="text-center text-white mb-16 px-4">
+    <h1 class="text-5xl md:text-6xl font-black mb-4">
+      Game<span class="text-purple-400">Over</span> Studio
+    </h1>
+    <p class="text-lg text-gray-300 max-w-2xl mx-auto">
+      Creando juegos epicos desde
+      <span class="font-bold text-purple-400">Quito, Ecuador</span>
+    </p>
+  </section>
+
+  <!-- City Info -->
+  <section class="max-w-3xl mx-auto mb-4 px-4">
+    <div class="bg-gray-900/60 border border-gray-800 rounded-2xl p-8">
+      <h2 class="text-2xl font-black text-white mb-6">{{ cityInfo().name }}</h2>
+
+      <div class="flex items-stretch">
+
+        <!-- Descripción -->
+        <div class="flex-1 pr-6 flex flex-col gap-2 text-center text-sm text-gray-300">
+          <p>• {{ cityInfo().population }} habitantes</p>
+          <p>• {{ cityInfo().altitude }} - Ciudad más alta del mundo</p>
+          <p class="text-white mt-1">{{ cityInfo().description }}</p>
+        </div>
+
+        <!-- Divider -->
+        <div class="w-px bg-gray-700"></div>
+
+        <!-- Instalaciones + Contacto -->
+        <div class="flex-1 pl-6 flex flex-col gap-5 text-center text-sm text-gray-300">
+
+          <div class="flex flex-col gap-2">
+            <p class="text-xs font-bold uppercase tracking-widest text-white">Instalaciones</p>
+            <p class="font-semibold text-white">{{ contactInfo().address }}</p>
+            <p>{{ contactInfo().hours }}</p>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p class="text-xs font-bold uppercase tracking-widest text-white">Contacto</p>
+            <p>{{ contactInfo().phone2 }}</p>
+            <p>{{ contactInfo().email }}</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="max-w-5xl mx-auto px-4 mt-16">
+    <h2 class="text-3xl font-black text-center text-white mb-10">Nuestro Equipo</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div *ngFor="let member of team()"
+           class="bg-gray-900/60 border border-gray-800 hover:border-purple-500/50
+                  rounded-2xl p-6 text-center transition-all duration-300
+                  hover:bg-gray-900/80 group">
+        <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600
+                    rounded-full mx-auto mb-4 flex items-center justify-center
+                    text-white font-black text-xl group-hover:scale-110 transition-transform">
+          {{ member.name[0] }}
+        </div>
+        <h3 class="font-bold text-white mb-1">{{ member.name }}</h3>
+        <p class="text-gray-400 text-sm">{{ member.role }}</p>
+      </div>
+    </div>
+  </section>
+
+</div>

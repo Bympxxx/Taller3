@@ -1,0 +1,112 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-900/40 via-gray-950 to-blue-900/40 py-24 px-4">
+  <div class="max-w-5xl mx-auto">
+
+    <h1 class="text-3xl font-black text-white mb-8">
+      Gestión de <span class="text-purple-400">Usuarios</span>
+    </h1>
+
+    <div *ngIf="esAdmin()" class="bg-gray-900/60 border border-gray-800 rounded-2xl p-6 mb-8">
+      <h2 class="text-lg font-bold text-white mb-4">
+        {{ editando() ? 'Editar Usuario' : 'Agregar Usuario' }}
+      </h2>
+
+      <form (ngSubmit)="guardarUsuario()" autocomplete="off"
+            class="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+        <input [(ngModel)]="nuevoUsuario.nombre" name="nombre"
+               (ngModelChange)="markDirty()"
+               type="text" placeholder="Nombre completo" required
+               class="w-full bg-gray-800 border border-gray-700 text-white
+                      rounded-xl px-4 py-3 text-sm focus:outline-none
+                      focus:border-purple-500 placeholder-gray-500"/>
+
+        <input [(ngModel)]="nuevoUsuario.email" name="email"
+               (ngModelChange)="markDirty()"
+               type="email" placeholder="Correo electrónico" required
+               class="w-full bg-gray-800 border border-gray-700 text-white
+                      rounded-xl px-4 py-3 text-sm focus:outline-none
+                      focus:border-purple-500 placeholder-gray-500"/>
+
+        <input *ngIf="!editando()" [(ngModel)]="nuevoUsuario.password" name="password"
+               (ngModelChange)="markDirty()"
+               type="password" placeholder="Contraseña" required
+               class="w-full bg-gray-800 border border-gray-700 text-white
+                      rounded-xl px-4 py-3 text-sm focus:outline-none
+                      focus:border-purple-500 placeholder-gray-500"/>
+
+        <select [(ngModel)]="nuevoUsuario.rol" name="rol"
+                (ngModelChange)="markDirty()"
+                class="w-full bg-gray-800 border border-gray-700 text-white
+                       rounded-xl px-4 py-3 text-sm focus:outline-none
+                       focus:border-purple-500">
+          <option value="USER">🎮 Gamer</option>
+          <option value="ADMIN">⚙️ Admin</option>
+        </select>
+
+        <div class="md:col-span-3 flex gap-3">
+          <button type="submit"
+                  class="flex-1 bg-purple-600 hover:bg-purple-500 text-white
+                         font-bold py-3 rounded-xl transition-all text-sm">
+            {{ editando() ? 'Actualizar Usuario' : 'Agregar Usuario' }}
+          </button>
+          <button type="button" (click)="limpiarFormulario()" *ngIf="editando()"
+                  class="bg-gray-700 hover:bg-gray-600 text-white
+                         font-bold py-3 px-6 rounded-xl transition-all text-sm">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabla -->
+    <div class="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden">
+      <table class="w-full text-left">
+        <thead class="bg-purple-900/40 text-gray-300 text-sm">
+          <tr>
+            <th *ngIf="esAdmin()" class="px-4 py-3">Acciones</th>
+            <th class="px-4 py-3">Nombre</th>
+            <th class="px-4 py-3">Email</th>
+            <th class="px-4 py-3">Rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (usuario of listaUsuarios(); track usuario.id) {
+            <tr class="border-t border-gray-800 hover:bg-gray-800/40 transition-colors">
+              <td *ngIf="esAdmin()" class="px-4 py-3">
+                <div class="flex gap-2">
+                  <button (click)="seleccionarParaEditar(usuario)"
+                          class="bg-blue-600/20 hover:bg-blue-600/40 text-blue-400
+                                 text-xs px-3 py-1.5 rounded-lg transition-colors">
+                    Editar
+                  </button>
+                  <button (click)="eliminarUsuario(usuario.id!)"
+                          class="bg-red-600/20 hover:bg-red-600/40 text-red-400
+                                 text-xs px-3 py-1.5 rounded-lg transition-colors">
+                    Eliminar
+                  </button>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-white font-medium text-sm">{{ usuario.nombre }}</td>
+              <td class="px-4 py-3 text-gray-400 text-sm">{{ usuario.email }}</td>
+              <td class="px-4 py-3">
+                <span [class]="usuario.rol === 'ADMIN'
+                  ? 'bg-purple-600/20 text-purple-400 text-xs px-2 py-1 rounded-lg'
+                  : 'bg-green-600/20 text-green-400 text-xs px-2 py-1 rounded-lg'">
+                  {{ usuario.rol === 'ADMIN' ? '⚙️ Admin' : '🎮 Gamer' }}
+                </span>
+              </td>
+            </tr>
+          }
+          @empty {
+            <tr>
+              <td [attr.colspan]="esAdmin() ? 4 : 3"
+                  class="px-4 py-8 text-center text-gray-500 text-sm">
+                No hay usuarios registrados
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

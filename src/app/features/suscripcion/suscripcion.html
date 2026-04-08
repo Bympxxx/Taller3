@@ -1,0 +1,88 @@
+<div class="min-h-screen py-20 px-4 relative overflow-hidden" style="background:#07080f;">
+
+  <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl pointer-events-none" style="background:radial-gradient(circle,#7c3aed,transparent)"></div>
+  <div class="absolute bottom-0 right-1/4 w-96 h-96 rounded-full opacity-15 blur-3xl pointer-events-none" style="background:radial-gradient(circle,#db2777,transparent)"></div>
+
+  <section class="text-center text-white mb-20 relative z-10">
+    <span class="inline-block mb-4 px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase border"
+          style="background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.4);color:#a78bfa;">
+      🎮 GameOver Premium
+    </span>
+    <h1 class="text-7xl font-black mb-4 leading-none"
+        style="background:linear-gradient(135deg,#fff,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+      Sube de nivel
+    </h1>
+    <p class="text-gray-400 max-w-lg mx-auto">Descuentos semanales, juegos exclusivos y acceso anticipado. Elige tu plan y domina.</p>
+  </section>
+
+  <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 relative z-10">
+    <div *ngFor="let plan of plans()" (click)="selectPlan(plan)" class="relative rounded-3xl p-8 cursor-pointer transition-all duration-500"
+         [style]="selectedPlan()===plan
+           ? 'background:linear-gradient(145deg,rgba(124,58,237,.25),rgba(219,39,119,.15));border:1px solid rgba(124,58,237,.6);transform:translateY(-8px);box-shadow:0 25px 50px rgba(124,58,237,.3)'
+           : 'background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)'">
+
+      <div *ngIf="plan.name==='Premium'" class="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase text-white"
+           style="background:linear-gradient(135deg,#7c3aed,#db2777);">★ Más Popular</div>
+
+      <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-6 border"
+           [style]="plan.name==='Basic'?'background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3)'
+                   :plan.name==='Premium'?'background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.3)'
+                   :'background:rgba(251,191,36,.15);border-color:rgba(251,191,36,.3)'">
+        {{plan.name==='Basic'?'🎮':plan.name==='Premium'?'⚡':'👑'}}
+      </div>
+
+      <h2 class="text-2xl font-black text-white mb-1">{{plan.name}}</h2>
+      <p class="text-gray-500 text-sm mb-4">{{plan.description}}</p>
+
+      <div class="mb-6">
+        <span class="text-4xl font-black"
+              [style]="plan.name==='Basic'?'color:#60a5fa':plan.name==='Premium'?'color:#a78bfa':'color:#fbbf24'">
+          {{plan.price}}
+        </span>
+        <span class="text-gray-500 text-sm ml-1" *ngIf="plan.name!=='Basic'">/mes</span>
+      </div>
+
+      <ul class="space-y-3 mb-8">
+        <li *ngFor="let f of plan.features" class="flex items-center gap-3 text-sm"
+            [style]="f.startsWith('✓')?'color:#d1d5db':'color:#4b5563'">
+          <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs flex-shrink-0"
+                [style]="f.startsWith('✓')?'background:rgba(34,197,94,.15);color:#4ade80':'background:rgba(107,114,128,.1);color:#4b5563'">
+            {{f.startsWith('✓')?'✓':'✗'}}
+          </span>
+          {{f.substring(2)}}
+        </li>
+      </ul>
+
+      <button (click)="subscribe();$event.stopPropagation()" class="w-full font-bold py-4 rounded-2xl text-sm text-white transition-all duration-300"
+              [style]="selectedPlan()===plan
+                ?'background:linear-gradient(135deg,#7c3aed,#db2777);box-shadow:0 8px 25px rgba(124,58,237,.4)'
+                :'background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)'">
+        {{ !usuarioActual() ? '🔐 Iniciar sesión' : selectedPlan()===plan ? '🚀 Suscribirme ahora' : 'Seleccionar plan' }}
+      </button>
+    </div>
+  </div>
+
+
+  <section class="text-center mt-24 relative z-10">
+    <p class="text-gray-600 text-sm mb-4 uppercase tracking-widest">Sin compromisos · Cancela cuando quieras</p>
+    <h2 class="text-4xl font-black text-white mb-8">¿Listo para subir<br>de nivel?</h2>
+
+    <button *ngIf="!usuarioActual()" routerLink="/login"
+            class="font-black px-14 py-5 rounded-2xl text-white text-lg transition-all hover:-translate-y-1"
+            style="background:linear-gradient(135deg,#7c3aed,#db2777);box-shadow:0 10px 40px rgba(124,58,237,.4)">
+      🔐 Inicia sesión para suscribirte →
+    </button>
+
+    <button *ngIf="usuarioActual()" (click)="subscribe()"
+            class="font-black px-14 py-5 rounded-2xl text-white text-lg transition-all hover:-translate-y-1"
+            style="background:linear-gradient(135deg,#7c3aed,#db2777);box-shadow:0 10px 40px rgba(124,58,237,.4)">
+      🚀 Comienza ahora →
+    </button>
+  </section>
+
+  <div *ngIf="suscrito()" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-4 rounded-2xl text-white font-bold text-sm shadow-2xl animate-bounce"
+       style="background:linear-gradient(135deg,#7c3aed,#db2777);box-shadow:0 10px 40px rgba(124,58,237,.5);">
+    🚀 ¡Suscrito a {{selectedPlan()?.name}}! Tu plan está activo.
+  </div>
+
+</div>
