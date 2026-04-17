@@ -64,6 +64,12 @@
             Tienda
           </a>
         </li>
+        <li>
+          <a routerLink="/torneos" routerLinkActive="text-purple-400"
+             class="block py-2 px-3 text-gray-300 hover:text-purple-400 transition-colors duration-200 md:p-0 font-medium">
+            Torneos
+          </a>
+        </li>
         <li *ngIf="usuarioLogueado()">
           <a routerLink="/registros" routerLinkActive="text-purple-400"
              class="block py-2 px-3 text-gray-300 hover:text-purple-400 transition-colors duration-200 md:p-0 font-medium">
@@ -81,6 +87,11 @@
         <li class="sm:hidden" *ngIf="!usuarioLogueado()">
           <a routerLink="/login" class="block py-2 px-3 text-gray-300 font-medium">
             Iniciar sesión
+          </a>
+        </li>
+        <li class="sm:hidden">
+          <a routerLink="/torneos" class="block py-2 px-3 text-gray-300 font-medium">
+            Torneos
           </a>
         </li>
         <li class="sm:hidden">

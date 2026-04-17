@@ -1,96 +1,182 @@
-<div class="min-h-screen bg-[#0a0a0f] p-8 text-white">
+<div class="min-h-screen bg-[#0a0a0f] p-8 text-white text-sm">
 
-  <div class="flex justify-between items-center mb-8">
-    <div>
-      <h1 class="text-3xl font-black">🎮 Panel <span class="text-purple-400">Admin</span></h1>
-      <p class="text-gray-500 text-sm mt-1">{{ games().length }} juegos en la tienda</p>
-    </div>
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-black italic">🎮 Panel <span class="text-purple-300">Admin</span></h1>
+    <p class="text-gray-400 mt-1 font-medium">Gestión de juegos y torneos</p>
   </div>
 
-  <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
-    <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
-      {{ editando() ? '✏️ Editando juego' : '➕ Agregar juego' }}
+  <!-- ═══════════════ SECCIÓN JUEGOS ═══════════════ -->
+  <div class="flex items-center gap-4 mb-6">
+    <div class="flex-1 h-px bg-white/10"></div>
+    <span class="text-[10px] uppercase tracking-[0.3em] text-gray-500">Gestión de Juegos</span>
+    <div class="flex-1 h-px bg-white/10"></div>
+  </div>
+
+  <!-- Formulario Juego -->
+  <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 backdrop-blur-md">
+    <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-4">
+      {{ editando() ? '✏️ Editando Videojuego' : '➕ Nuevo Videojuego' }}
     </h2>
-
-    <div class="grid grid-cols-2 gap-4 mb-4">
-      <input [(ngModel)]="gameForm.titulo" (ngModelChange)="onFormChange()" placeholder="Título"
-             class="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500"/>
-      <input [(ngModel)]="gameForm.genero" (ngModelChange)="onFormChange()" placeholder="Género"
-             class="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500"/>
-      <input [(ngModel)]="gameForm.platform" (ngModelChange)="onFormChange()" placeholder="Plataforma"
-             class="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500"/>
-      <input type="number" [(ngModel)]="gameForm.precio" (ngModelChange)="onFormChange()" placeholder="Precio"
-             class="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500"/>
-      <input type="number" [(ngModel)]="gameForm.rating" (ngModelChange)="onFormChange()" placeholder="Rating (0-5)" min="0" max="5" step="0.1"
-             class="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500"/>
-      <input type="number" [(ngModel)]="gameForm.releaseYear" (ngModelChange)="onFormChange()" placeholder="Año"
-             class="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500"/>
-      <input type="number" [(ngModel)]="gameForm.stock" (ngModelChange)="onFormChange()" placeholder="Stock"
-             class="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500"/>
-      <input [(ngModel)]="gameForm.imagen" (ngModelChange)="onFormChange()" placeholder="URL de imagen"
-             class="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500"/>
-      <textarea [(ngModel)]="gameForm.descripcion" (ngModelChange)="onFormChange()" placeholder="Descripción" rows="2"
-                class="col-span-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 resize-none"></textarea>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      <div *ngFor="let f of fieldsGames"
+           [class.col-span-2]="f.key === 'titulo' || f.key === 'imagen'">
+        <label class="block text-[10px] text-gray-600 uppercase font-bold mb-1 ml-1">{{ f.label }}</label>
+        <input [(ngModel)]="gameForm[f.key]"
+               [type]="f.type || 'text'"
+               [placeholder]="f.label"
+               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 outline-none focus:border-purple-500 focus:bg-white/[0.08] transition-all">
+      </div>
+      <div class="col-span-2 md:col-span-4">
+        <label class="block text-[10px] text-gray-600 uppercase font-bold mb-1 ml-1">Descripción</label>
+        <textarea [(ngModel)]="gameForm.descripcion"
+                  placeholder="Descripción del juego..." rows="2"
+                  class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 outline-none focus:border-purple-500 resize-none"></textarea>
+      </div>
     </div>
-
     <div class="flex gap-3">
       <button (click)="guardar()" [disabled]="guardando()"
-              class="flex-1 py-2.5 rounded-xl font-bold text-sm text-white disabled:opacity-50"
-              style="background: linear-gradient(135deg, #7c3aed, #db2777);">
-        {{ guardando() ? 'Guardando...' : (editando() ? 'Guardar cambios' : 'Agregar juego') }}
+              class="flex-1 py-3.5 rounded-xl font-black uppercase tracking-widest bg-gradient-to-r from-purple-600 to-pink-600 hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50 disabled:grayscale shadow-lg shadow-purple-500/20">
+        {{ guardando() ? 'Guardando...' : 'Confirmar' }}
       </button>
       <button *ngIf="editando()" (click)="cancelarEdicion()"
-              class="px-6 py-2.5 rounded-xl font-bold text-sm bg-white/5 border border-white/10 text-gray-400">
-        Cancelar
+              class="px-8 py-3.5 bg-white/10 border border-white/10 rounded-xl text-gray-400 font-bold uppercase hover:bg-white/20 transition-all">
+        X
       </button>
     </div>
   </div>
 
-  <div class="bg-white/3 border border-white/7 rounded-2xl overflow-hidden">
-    <div *ngIf="loading()" class="text-center py-16 text-gray-500">Cargando...</div>
-
-    <table *ngIf="!loading()" class="w-full">
-      <thead class="bg-white/5 text-xs text-gray-400 uppercase tracking-wider">
+  <!-- Tabla Juegos -->
+  <div class="bg-white/3 border border-white/7 rounded-2xl overflow-hidden mb-12 shadow-2xl">
+    <div *ngIf="loading()" class="text-center py-16 text-gray-500 italic">Actualizando lista...</div>
+    <table *ngIf="!loading()" class="w-full text-left">
+      <thead class="bg-white/5 text-[10px] text-gray-400 uppercase tracking-widest">
         <tr>
-          <th class="px-5 py-3 text-left">Juego</th>
-          <th class="px-5 py-3 text-left">Género</th>
-          <th class="px-5 py-3 text-left">Plataforma</th>
-          <th class="px-5 py-3 text-left">Precio</th>
-          <th class="px-5 py-3 text-left">Rating</th>
-          <th class="px-5 py-3 text-left">Stock</th>
-          <th class="px-5 py-3 text-left">Acciones</th>
+          <th class="px-5 py-4">Juego</th>
+          <th class="px-5 py-4 text-center">Género</th>
+          <th class="px-5 py-4">Plataforma</th>
+          <th class="px-5 py-4">Precio</th>
+          <th class="px-5 py-4 text-center">Rating</th>
+          <th class="px-5 py-4 text-center">Stock</th>
+          <th class="px-5 py-4 text-center">Acciones</th>
         </tr>
       </thead>
-      <tbody>
-        <tr *ngFor="let game of games()"
-            class="border-t border-white/5 hover:bg-white/3 transition-colors">
-          <td class="px-5 py-3">
-            <div class="flex items-center gap-3">
-              <img [src]="game.imagen" [alt]="game.titulo"
-                   class="w-10 h-10 object-contain rounded-lg bg-black/40"/>
-              <span class="font-semibold text-sm">{{ game.titulo }}</span>
-            </div>
+      <tbody class="divide-y divide-white/5">
+        <tr *ngFor="let g of games()" class="hover:bg-white/3 transition-colors">
+          <td class="px-5 py-4 flex items-center gap-3">
+            <img [src]="g.imagen" class="w-10 h-10 object-cover rounded-lg bg-black/40 border border-white/10"/>
+            <span class="font-bold">{{ g.titulo }}</span>
           </td>
-          <td class="px-5 py-3 text-purple-400 text-sm">{{ game.genero }}</td>
-          <td class="px-5 py-3 text-blue-400 text-sm">{{ game.platform }}</td>
-          <td class="px-5 py-3 text-purple-400 font-bold">${{ game.precio }}</td>
-          <td class="px-5 py-3 text-yellow-400 text-sm">★ {{ game.rating }}</td>
-          <td class="px-5 py-3 text-gray-400 text-sm">{{ game.stock }}</td>
-          <td class="px-5 py-3">
-            <div class="flex gap-2">
-              <button (click)="abrirEditar(game)"
-                      class="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/15 text-blue-400">
-                ✏️ Editar
-              </button>
-              <button (click)="eliminar(game)"
-                      class="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-500/15 text-red-400">
-                🗑️ Eliminar
-              </button>
+          <td class="px-5 py-4 text-center">
+            <span class="text-purple-400 px-2 py-1 bg-purple-400/10 rounded">{{ g.genero }}</span>
+          </td>
+          <td class="px-5 py-4 text-blue-400 font-medium">{{ g.platform }}</td>
+          <td class="px-5 py-4 text-purple-400 font-black">${{ g.precio }}</td>
+          <td class="px-5 py-4 text-center text-yellow-400 font-bold">★ {{ g.rating }}</td>
+          <td class="px-5 py-4 text-center font-mono text-gray-400">{{ g.stock }}</td>
+          <td class="px-5 py-4 text-center">
+            <div class="flex justify-center gap-2">
+              <button (click)="abrirEditar(g)"
+                      class="p-2 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-all">✏️</button>
+              <button (click)="eliminar(g)"
+                      class="p-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-all">🗑️</button>
             </div>
           </td>
         </tr>
-        <tr *ngIf="games().length === 0">
-          <td colspan="7" class="text-center text-gray-600 py-12">No hay juegos aún</td>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════ SECCIÓN TORNEOS ═══════════════ -->
+  <div class="flex items-center gap-4 mb-6">
+    <div class="flex-1 h-px bg-white/10"></div>
+    <span class="text-[10px] uppercase tracking-[0.3em] text-gray-500">Gestión de Torneos</span>
+    <div class="flex-1 h-px bg-white/10"></div>
+  </div>
+
+  <!-- Formulario Torneo -->
+  <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 backdrop-blur-md">
+    <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-4">
+      {{ editandoTorneo() ? '✏️ Editando Torneo' : '🏆 Crear Torneo' }}
+    </h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      <div *ngFor="let f of fieldsTorneos"
+           [class.col-span-2]="f.key === 'nombre' || f.key === 'imagen'">
+        <label class="block text-[10px] text-gray-600 uppercase font-bold mb-1 ml-1">{{ f.label }}</label>
+        <input [(ngModel)]="torneoForm[f.key]"
+               [type]="f.type || 'text'"
+               [placeholder]="f.label"
+               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 outline-none focus:border-purple-500 focus:bg-white/[0.08] transition-all">
+      </div>
+      <div class="col-span-2">
+        <label class="block text-[10px] text-gray-600 uppercase font-bold mb-1 ml-1">Estado</label>
+        <select [(ngModel)]="torneoForm.estado"
+                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 outline-none focus:border-purple-500 text-gray-400">
+          <option value="PROXIMO"   class="bg-[#0a0a0f]">Próximo</option>
+          <option value="ACTIVO"    class="bg-[#0a0a0f]">Activo</option>
+          <option value="FINALIZADO"class="bg-[#0a0a0f]">Finalizado</option>
+        </select>
+      </div>
+      <div class="col-span-2 md:col-span-4">
+        <label class="block text-[10px] text-gray-600 uppercase font-bold mb-1 ml-1">Descripción</label>
+        <textarea [(ngModel)]="torneoForm.descripcion"
+                  placeholder="Detalles del torneo..." rows="2"
+                  class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 outline-none focus:border-purple-500 resize-none"></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button (click)="guardarTorneo()" [disabled]="guardandoTorneo()"
+              class="flex-1 py-3.5 rounded-xl font-black uppercase tracking-widest bg-gradient-to-r from-purple-600 to-pink-600 hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50 disabled:grayscale shadow-lg shadow-purple-500/20">
+        {{ guardandoTorneo() ? 'Guardando...' : 'Confirmar' }}
+      </button>
+      <button *ngIf="editandoTorneo()" (click)="cancelarEdicionTorneo()"
+              class="px-8 py-3.5 bg-white/10 border border-white/10 rounded-xl text-gray-400 font-bold uppercase hover:bg-white/20 transition-all">
+        X
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla Torneos -->
+  <div class="bg-white/3 border border-white/7 rounded-2xl overflow-hidden shadow-2xl">
+    <div *ngIf="loadingTorneos()" class="text-center py-16 text-gray-500 italic">Cargando eventos...</div>
+    <table *ngIf="!loadingTorneos()" class="w-full text-left">
+      <thead class="bg-white/5 text-[10px] text-gray-400 uppercase tracking-widest">
+        <tr>
+          <th class="px-5 py-4">Torneo</th>
+          <th class="px-5 py-4 text-center">Juego</th>
+          <th class="px-5 py-4">Fechas</th>
+          <th class="px-5 py-4 text-center">Cupos</th>
+          <th class="px-5 py-4">Premio</th>
+          <th class="px-5 py-4 text-center">Estado</th>
+          <th class="px-5 py-4 text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-white/5">
+        <tr *ngFor="let t of torneos()" class="hover:bg-white/3 transition-colors">
+          <td class="px-5 py-4 font-bold">{{ t.nombre }}</td>
+          <td class="px-5 py-4 text-center text-purple-400 font-medium">{{ t.juego }}</td>
+          <td class="px-5 py-4 text-[10px] text-gray-400 leading-tight">
+            <div>{{ t.fechaInicio | date:'dd/MM/yyyy' }}</div>
+            <div class="opacity-40">→ {{ t.fechaFin | date:'dd/MM/yyyy' }}</div>
+          </td>
+          <td class="px-5 py-4 text-center text-blue-400 font-black">{{ t.maxParticipantes }}</td>
+          <td class="px-5 py-4 text-yellow-400 font-black">${{ t.premioPrincipal }}</td>
+          <td class="px-5 py-4 text-center">
+            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter shadow-sm"
+                  [ngClass]="{
+                    'bg-blue-500/20 text-blue-400':  t.estado === 'PROXIMO',
+                    'bg-green-500/20 text-green-400': t.estado === 'ACTIVO',
+                    'bg-gray-500/20 text-gray-400':  t.estado === 'FINALIZADO'
+                  }">{{ t.estado }}</span>
+          </td>
+          <td class="px-5 py-4 text-center">
+            <div class="flex justify-center gap-2">
+              <button (click)="abrirEditarTorneo(t)"
+                      class="p-2 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-all">✏️</button>
+              <button (click)="eliminarTorneo(t)"
+                      class="p-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-all">🗑️</button>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>

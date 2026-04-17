@@ -11,6 +11,7 @@ export const routes: Routes = [
   { path: 'nosotros', loadComponent: () => import('./features/nosotros/nosotros').then(m => m.Nosotros) },
   { path: 'suscripcion', loadComponent: () => import('./features/suscripcion/suscripcion').then(m => m.Suscripcion) },
   { path: 'tienda', loadComponent: () => import('./features/tienda/tienda').then(m => m.Tienda) },
+  { path: 'torneos', loadComponent: () => import('./shared/torneos/torneos').then(m => m.Torneos) },
   { 
     path: 'registros', 
     canActivate: [authGuard],
@@ -23,7 +24,7 @@ export const routes: Routes = [
     canMatch: [canMatchGuard],
     canActivateChild: [canActivateChildGuard],
     canDeactivate: [canDeactivateGuard],
-    loadComponent: () => import('./features/admin/admin').then(m => m.Admin)
+    loadComponent: () => import('./features/admin/admin').then(m => m.AdminComponent)
   },
   { path: '**', redirectTo: '' }
 ];
